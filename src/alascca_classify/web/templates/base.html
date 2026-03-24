@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ALASCCA-classify{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/molpath.css">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="mp-background-glow"></div>
+
+  <header class="site-header">
+    <div class="mp-layout">
+      <nav class="mp-flex mp-between">
+        <a href="/" class="brand">
+          <span class="brand-mark">PI3K</span>
+          <span class="brand-name">alascca-classify</span>
+        </a>
+        <div class="mp-flex nav-links">
+          <a href="/">Classify</a>
+          <a href="/methods">Methods</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mp-layout mp-animate-in">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="mp-layout">
+      <p class="mp-soft" style="font-size: var(--mp-fs-xs); line-height: 1.6;">
+        alascca-classify v{{ version }}.
+        Research and clinical decision support only. Final treatment decisions must be made by the treating physician.<br>
+        Based on Martling et al., NEJM 2025;393:1051-64. ALASCCA trial.
+        <a href="https://github.com/viktorlj/alascca-classify" style="color: var(--mp-accent);">GitHub</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

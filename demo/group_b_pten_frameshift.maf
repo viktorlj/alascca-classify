@@ -1,0 +1,4 @@
+#version 2.4
+Hugo_Symbol	Variant_Classification	HGVSp_Short	Chromosome	Start_Position	Reference_Allele	Tumor_Seq_Allele2	t_alt_count	t_ref_count
+PTEN	Frame_Shift_Del	p.K267fs	10	89717672	AG	-	40	110
+BRAF	Missense_Mutation	p.V600E	7	140453136	T	A	60	90

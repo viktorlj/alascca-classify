@@ -1,0 +1,25 @@
+{
+  "high_impact": [
+    "frameshift_variant",
+    "start_lost",
+    "stop_gained",
+    "splice_acceptor_variant",
+    "splice_donor_variant"
+  ],
+  "moderate_impact": [
+    "missense_variant",
+    "inframe_deletion",
+    "inframe_insertion"
+  ],
+  "maf_to_vep_mapping": {
+    "Missense_Mutation": "missense_variant",
+    "Frame_Shift_Del": "frameshift_variant",
+    "Frame_Shift_Ins": "frameshift_variant",
+    "In_Frame_Del": "inframe_deletion",
+    "In_Frame_Ins": "inframe_insertion",
+    "Nonsense_Mutation": "stop_gained",
+    "Splice_Site": "splice_site",
+    "Translation_Start_Site": "start_lost",
+    "Nonstop_Mutation": "stop_lost"
+  }
+}

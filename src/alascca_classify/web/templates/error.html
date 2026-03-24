@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Error &mdash; ALASCCA-classify{% endblock %}
+
+{% block content %}
+<div class="mp-panel">
+  <p class="mp-eyebrow" style="color: var(--mp-danger);">Error</p>
+  <h1 style="font-size: var(--mp-fs-xl); margin-top: 4px;">Something went wrong</h1>
+  <div class="mp-error-box" style="margin-top: 14px;">{{ error }}</div>
+  <div style="margin-top: 16px;">
+    <a href="/" class="mp-btn-primary" style="text-decoration: none; padding: 9px 18px;">Try again</a>
+  </div>
+</div>
+{% endblock %}

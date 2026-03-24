@@ -1,0 +1,320 @@
+/* style.css — ALASCCA-classify app-specific styles */
+
+/* --- Color tokens for groups --- */
+:root {
+  --group-a: #1b7a3d;
+  --group-a-bg: #e8f5e9;
+  --group-a-border: #4caf50;
+  --group-b: #1565c0;
+  --group-b-bg: #e3f2fd;
+  --group-b-border: #42a5f5;
+  --group-none: #757575;
+  --group-none-bg: #f5f5f5;
+  --group-none-border: #bdbdbd;
+}
+
+/* --- Header --- */
+.site-header {
+  border-bottom: 1px solid var(--mp-border);
+  padding: 10px 0;
+}
+
+.brand {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-mark {
+  background: var(--mp-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
+.brand-name {
+  font-weight: 600;
+  color: var(--mp-ink);
+  font-size: var(--mp-fs-base);
+}
+
+.nav-links a {
+  color: var(--mp-ink-soft);
+  text-decoration: none;
+  font-size: var(--mp-fs-sm);
+}
+
+.nav-links a:hover {
+  color: var(--mp-accent);
+}
+
+/* --- Footer --- */
+.site-footer {
+  border-top: 1px solid var(--mp-border);
+  padding: 14px 0 20px;
+}
+
+/* --- Upload form --- */
+.upload-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.upload-field label {
+  display: block;
+  font-size: var(--mp-fs-sm);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.upload-field input[type="file"] {
+  width: 100%;
+}
+
+.required {
+  color: var(--mp-danger);
+}
+
+.form-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.form-grid-4 label {
+  display: block;
+  font-size: var(--mp-fs-sm);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.form-grid-4 input,
+.form-grid-4 select {
+  width: 100%;
+}
+
+.metadata-section summary {
+  user-select: none;
+}
+
+/* --- Demo chips --- */
+.demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: var(--mp-radius-sm);
+  font-size: var(--mp-fs-sm);
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid;
+  transition: all var(--mp-transition);
+}
+
+.demo-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--mp-shadow-hover);
+}
+
+.demo-chip.group-a {
+  background: var(--group-a-bg);
+  border-color: var(--group-a-border);
+  color: var(--group-a);
+}
+
+.demo-chip.group-b {
+  background: var(--group-b-bg);
+  border-color: var(--group-b-border);
+  color: var(--group-b);
+}
+
+.demo-chip.group-none {
+  background: var(--group-none-bg);
+  border-color: var(--group-none-border);
+  color: var(--group-none);
+}
+
+/* --- Result hero --- */
+.result-hero {
+  border-left: 5px solid;
+}
+
+.result-hero.group-a { border-left-color: var(--group-a); }
+.result-hero.group-b { border-left-color: var(--group-b); }
+.result-hero.group-none { border-left-color: var(--group-none); }
+
+.result-hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+  gap: 16px;
+}
+
+.result-group-label {
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 700;
+}
+
+.group-a .result-group-label { color: var(--group-a); }
+.group-b .result-group-label { color: var(--group-b); }
+.group-none .result-group-label { color: var(--group-none); }
+
+.result-group-desc {
+  margin: 4px 0 0;
+  color: var(--mp-ink-soft);
+  font-size: var(--mp-fs-base);
+}
+
+.result-sample-id {
+  margin-top: 8px;
+  font-size: var(--mp-fs-sm);
+  color: var(--mp-ink-soft);
+}
+
+/* --- Aspirin badge --- */
+.aspirin-badge {
+  padding: 8px 18px;
+  border-radius: var(--mp-radius-sm);
+  font-weight: 600;
+  font-size: var(--mp-fs-sm);
+  white-space: nowrap;
+}
+
+.aspirin-badge.eligible {
+  background: var(--group-a-bg);
+  color: var(--group-a);
+  border: 1px solid var(--group-a-border);
+}
+
+.aspirin-badge.not-eligible {
+  background: var(--group-none-bg);
+  color: var(--group-none);
+  border: 1px solid var(--group-none-border);
+}
+
+/* --- Variant table --- */
+.variant-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--mp-fs-sm);
+}
+
+.variant-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--mp-border);
+  font-size: var(--mp-fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mp-ink-soft);
+}
+
+.variant-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.variant-table tbody tr:hover {
+  background: #fafaf5;
+}
+
+/* --- Biomarker grid --- */
+.biomarker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.biomarker-positive {
+  color: var(--mp-accent-2);
+  font-weight: 600;
+}
+
+/* --- PTEN deletion metrics --- */
+.pten-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* --- Clinical notes --- */
+.clinical-notes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.clinical-notes li {
+  padding: 6px 0;
+  border-bottom: 1px solid #f0ece4;
+  font-size: var(--mp-fs-sm);
+  line-height: 1.5;
+}
+
+.clinical-notes li:last-child {
+  border-bottom: none;
+}
+
+/* --- Action bar --- */
+.action-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* --- Methods page --- */
+.methods-heading {
+  font-size: var(--mp-fs-lg);
+  margin-bottom: 10px;
+}
+
+.algorithm-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flow-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--mp-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--mp-fs-sm);
+  flex-shrink: 0;
+}
+
+.references li {
+  color: var(--mp-ink-soft);
+}
+
+/* --- Responsive --- */
+@media (max-width: 700px) {
+  .upload-row { grid-template-columns: 1fr; }
+  .form-grid-4 { grid-template-columns: 1fr 1fr; }
+  .biomarker-grid { grid-template-columns: 1fr 1fr; }
+  .pten-metrics { grid-template-columns: 1fr; }
+  .result-hero-row { flex-direction: column; }
+  .action-bar { flex-wrap: wrap; }
+}

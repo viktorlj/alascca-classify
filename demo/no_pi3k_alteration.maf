@@ -1,0 +1,6 @@
+#version 2.4
+Hugo_Symbol	Variant_Classification	HGVSp_Short	Chromosome	Start_Position	Reference_Allele	Tumor_Seq_Allele2	t_alt_count	t_ref_count
+KRAS	Missense_Mutation	p.G12D	12	25398284	G	A	40	110
+BRAF	Missense_Mutation	p.V600E	7	140453136	T	A	55	95
+APC	Nonsense_Mutation	p.R1450*	5	112175770	C	T	65	85
+TP53	Missense_Mutation	p.R273H	17	7577538	G	A	50	100

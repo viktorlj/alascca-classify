@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Methods &mdash; ALASCCA-classify{% endblock %}
+
+{% block content %}
+<div class="mp-panel">
+  <p class="mp-eyebrow">Methods</p>
+  <h1 style="font-size: var(--mp-fs-xl); margin-top: 4px;">Classification algorithm</h1>
+  <p class="mp-subtitle" style="margin-top: 6px;">
+    Based on the ALASCCA trial (Martling et al., NEJM 2025;393:1051-64) and supplementary Table S3.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">The ALASCCA trial</h2>
+  <p>
+    ALASCCA was a double-blind, randomized, placebo-controlled trial of adjuvant aspirin
+    (160 mg/day for 3 years) in resected stage I&ndash;III colorectal cancer with somatic PI3K
+    pathway alterations. Key findings:
+  </p>
+  <ul>
+    <li><strong>Group A</strong> (PIK3CA exon 9/20 hotspots): 3-year recurrence 7.7% aspirin vs 14.1% placebo (HR 0.49, p=0.04)</li>
+    <li><strong>Group B</strong> (other PI3K pathway alterations): 3-year recurrence 7.7% aspirin vs 16.8% placebo (HR 0.42)</li>
+    <li>Combined: HR 0.45 (95% CI 0.28&ndash;0.74)</li>
+    <li>~37% of CRC patients have PI3K pathway alterations (17.3% Group A, 19.7% Group B)</li>
+  </ul>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Group A &mdash; PIK3CA hotspot mutations</h2>
+  <p>
+    Missense variants at the following protein positions in PIK3CA
+    (transcript ENST00000263967):
+  </p>
+  <table class="variant-table">
+    <thead>
+      <tr><th>Position</th><th>Exon</th><th>Domain</th><th>Common changes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>E542</td><td>9</td><td>Helical</td><td>E542K, E542V, E542Q</td></tr>
+      <tr><td>E545</td><td>9</td><td>Helical</td><td>E545K, E545G, E545A, E545D</td></tr>
+      <tr><td>Q546</td><td>9</td><td>Helical</td><td>Q546K, Q546R, Q546E</td></tr>
+      <tr><td>H1021</td><td>20</td><td>Kinase</td><td>H1021R</td></tr>
+      <tr><td>N1043</td><td>20</td><td>Kinase</td><td>N1043K</td></tr>
+      <tr><td>H1044</td><td>20</td><td>Kinase</td><td>H1044R, H1044L</td></tr>
+      <tr><td>H1047</td><td>20</td><td>Kinase</td><td>H1047R, H1047L, H1047Y</td></tr>
+    </tbody>
+  </table>
+  <p class="mp-soft" style="font-size: var(--mp-fs-sm); margin-top: 8px;">
+    Any missense at these 7 positions qualifies as Group A.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Group B &mdash; Other PI3K pathway alterations</h2>
+  <table class="variant-table">
+    <thead>
+      <tr><th>Gene</th><th>Transcript</th><th>Qualifying consequence types</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PIK3CA</td>
+        <td class="mp-mono" style="font-size: var(--mp-fs-sm);">ENST00000263967</td>
+        <td>Non-hotspot missense, frameshift, inframe ins/del, start lost, stop gained, splice</td>
+      </tr>
+      <tr>
+        <td>PIK3R1</td>
+        <td class="mp-mono" style="font-size: var(--mp-fs-sm);">ENST00000521381</td>
+        <td>Missense, frameshift, inframe ins/del, start lost, stop gained, splice</td>
+      </tr>
+      <tr>
+        <td>PTEN</td>
+        <td class="mp-mono" style="font-size: var(--mp-fs-sm);">ENST00000371953</td>
+        <td>Missense, frameshift, inframe ins/del, start lost, stop gained, splice, <strong>homozygous loss</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Priority rule</h2>
+  <p>
+    If a patient has <strong>both</strong> Group A and Group B alterations, they are assigned
+    to <strong>Group A</strong>.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">PTEN deep deletion</h2>
+  <p>From the ALASCCA supplementary methods:</p>
+  <ul>
+    <li>Requires estimated tumor cell fraction &ge; 0.30</li>
+    <li>A deletion is called if a CNV segment overlapping PTEN (including at least one exon) shows at least
+        15% lower DNA abundance (absolute log-ratio difference of 0.2) compared to flanking regions both
+        3 Mb upstream and downstream of PTEN</li>
+    <li>This is the only CNV-based alteration in the classification</li>
+  </ul>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Classification algorithm</h2>
+  <div class="algorithm-flow">
+    <div class="flow-step">
+      <div class="flow-step-num">1</div>
+      <div>Parse MAF file &rarr; extract variants in PIK3CA, PIK3R1, PTEN</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">2</div>
+      <div>Check PIK3CA variants against Group A hotspot positions (7 positions in exon 9/20)</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">3</div>
+      <div>Check remaining PI3K pathway variants against Group B consequence types</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">4</div>
+      <div>If SEG file provided: assess PTEN deep deletion from copy number data</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">5</div>
+      <div>Apply priority: Group A > Group B > none</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-step-num">6</div>
+      <div>Detect informational biomarkers: BRAF V600E, KRAS, NRAS, MSI status</div>
+    </div>
+  </div>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Caveats</h2>
+  <ol style="line-height: 1.7; color: var(--mp-ink-soft);">
+    <li><strong>Research and clinical decision support only.</strong> Final treatment decisions must be made by the treating physician.</li>
+    <li><strong>PTEN deep deletion</strong> requires adequate tumor purity (&ge;30%) and uses a simplified algorithm.</li>
+    <li><strong>The tool classifies variants but does not assess pathogenicity.</strong> All missense variants are included per ALASCCA protocol (VEP moderate impact threshold).</li>
+    <li><strong>Germline filtering is assumed.</strong> The input MAF should contain somatic variants only.</li>
+    <li><strong>This tool does not replace the full ALASCCA genomic pipeline</strong> which included custom library prep and manual QC review.</li>
+  </ol>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">References</h2>
+  <ol class="references" style="font-size: var(--mp-fs-sm); line-height: 1.7;">
+    <li>Martling A, et al. Low-Dose Aspirin for PI3K-Altered Localized Colorectal Cancer. <em>N Engl J Med</em> 2025;393:1051-64.</li>
+    <li>Cathomas G. PIK3CA in colorectal cancer. <em>Front Oncol</em> 2014;4:35.</li>
+    <li>Hall DCN, Benndorf RA. Aspirin sensitivity of PIK3CA-mutated CRC. <em>Cell Mol Life Sci</em> 2022;79:393.</li>
+    <li>Liao X, et al. Aspirin use, tumor PIK3CA mutation, and colorectal-cancer survival. <em>N Engl J Med</em> 2012;367:1596-606.</li>
+    <li>Yang J, et al. Aspirin prevents metastasis by limiting platelet TXA2 suppression of T cell immunity. <em>Nature</em> 2025;640:1052-61.</li>
+  </ol>
+</div>
+{% endblock %}

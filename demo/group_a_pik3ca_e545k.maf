@@ -1,0 +1,5 @@
+#version 2.4
+Hugo_Symbol	Variant_Classification	HGVSp_Short	Chromosome	Start_Position	Reference_Allele	Tumor_Seq_Allele2	t_alt_count	t_ref_count
+PIK3CA	Missense_Mutation	p.E545K	3	178936091	G	A	55	95
+KRAS	Missense_Mutation	p.G12D	12	25398284	G	A	32	118
+TP53	Missense_Mutation	p.R175H	17	7578406	G	A	45	105

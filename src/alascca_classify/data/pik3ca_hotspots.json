@@ -1,0 +1,15 @@
+{
+  "gene": "PIK3CA",
+  "ensembl_gene": "ENSG00000121879",
+  "transcript": "ENST00000263967",
+  "group_a_positions": [542, 545, 546, 1021, 1043, 1044, 1047],
+  "position_annotations": {
+    "542": {"exon": 9, "domain": "helical", "common_changes": ["E542K", "E542V", "E542Q"]},
+    "545": {"exon": 9, "domain": "helical", "common_changes": ["E545K", "E545G", "E545A", "E545D"]},
+    "546": {"exon": 9, "domain": "helical", "common_changes": ["Q546K", "Q546R", "Q546E"]},
+    "1021": {"exon": 20, "domain": "kinase", "common_changes": ["H1021R"]},
+    "1043": {"exon": 20, "domain": "kinase", "common_changes": ["N1043K"]},
+    "1044": {"exon": 20, "domain": "kinase", "common_changes": ["H1044R", "H1044L"]},
+    "1047": {"exon": 20, "domain": "kinase", "common_changes": ["H1047R", "H1047L", "H1047Y"]}
+  }
+}

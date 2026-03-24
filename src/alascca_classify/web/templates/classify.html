@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Classify &mdash; ALASCCA-classify{% endblock %}
+
+{% block content %}
+<div class="mp-panel">
+  <p class="mp-eyebrow">PI3K pathway classification</p>
+  <h1 style="font-size: var(--mp-fs-xl); margin-top: 4px;">ALASCCA-classify</h1>
+  <p class="mp-subtitle" style="margin-top: 6px;">
+    Classify PI3K pathway alterations in colorectal cancer to determine eligibility
+    for adjuvant aspirin therapy per the ALASCCA trial.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 12px;">Upload sample data</h2>
+
+  <form action="/classify" method="post" enctype="multipart/form-data">
+    <div class="upload-row">
+      <div class="upload-field">
+        <label for="maf_file">MAF file <span class="required">*</span></label>
+        <input type="file" id="maf_file" name="maf_file" accept=".maf,.txt,.tsv" required>
+      </div>
+      <div class="upload-field">
+        <label for="seg_file">SEG file <span class="mp-soft">(optional, for PTEN deletion)</span></label>
+        <input type="file" id="seg_file" name="seg_file" accept=".seg,.txt,.tsv">
+      </div>
+    </div>
+
+    <details class="metadata-section">
+      <summary class="mp-section-title" style="cursor: pointer; margin: 14px 0 8px;">Optional metadata</summary>
+      <div class="form-grid-4">
+        <div>
+          <label for="sample_id">Sample ID</label>
+          <input type="text" id="sample_id" name="sample_id" placeholder="Inferred from filename">
+        </div>
+        <div>
+          <label for="ptnm_stage">pTNM stage</label>
+          <select id="ptnm_stage" name="ptnm_stage">
+            <option value="">Not specified</option>
+            <option value="I">Stage I</option>
+            <option value="II">Stage II</option>
+            <option value="III">Stage III</option>
+          </select>
+        </div>
+        <div>
+          <label for="tumor_location">Tumor location</label>
+          <select id="tumor_location" name="tumor_location">
+            <option value="">Not specified</option>
+            <option value="colon_right">Colon (right)</option>
+            <option value="colon_left">Colon (left)</option>
+            <option value="rectum">Rectum</option>
+          </select>
+        </div>
+        <div>
+          <label for="msi_status">MSI status</label>
+          <select id="msi_status" name="msi_status">
+            <option value="">Not specified</option>
+            <option value="MSS">MSS</option>
+            <option value="MSI-H">MSI-H</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <label for="tumor_purity">Tumor purity (0&ndash;1)</label>
+        <input type="text" id="tumor_purity" name="tumor_purity" placeholder="e.g. 0.45" style="width: 120px;">
+      </div>
+    </details>
+
+    <div style="margin-top: 16px;">
+      <button type="submit" class="mp-btn-primary" style="padding: 11px 28px; font-weight: 600;">
+        Classify
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">Demo samples</h2>
+  <p class="mp-soft" style="font-size: var(--mp-fs-sm); margin-bottom: 10px;">
+    Click a demo to see classification results.
+  </p>
+  <div class="demo-chips">
+    <a href="/demo/group_a_pik3ca_e545k" class="demo-chip group-a">Group A &mdash; PIK3CA E545K</a>
+    <a href="/demo/group_b_pten_frameshift" class="demo-chip group-b">Group B &mdash; PTEN frameshift</a>
+    <a href="/demo/group_b_pik3r1_missense" class="demo-chip group-b">Group B &mdash; PIK3R1 missense</a>
+    <a href="/demo/group_ab_combined" class="demo-chip group-a">A+B combined &rarr; Group A</a>
+    <a href="/demo/no_pi3k_alteration" class="demo-chip group-none">No PI3K alteration</a>
+    <a href="/demo/pten_deletion" class="demo-chip group-b">PTEN deep deletion (SEG)</a>
+  </div>
+</div>
+
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 8px;">About</h2>
+  <p style="font-size: var(--mp-fs-sm); line-height: 1.6; color: var(--mp-ink-soft);">
+    The <strong>ALASCCA trial</strong> (Martling et al., NEJM 2025) showed that adjuvant low-dose aspirin
+    (160 mg daily for 3 years) significantly reduces recurrence in resected stage I&ndash;III colorectal cancer
+    with somatic PI3K pathway alterations.
+    <strong>Group A</strong> (PIK3CA exon 9/20 hotspots) and <strong>Group B</strong>
+    (other PI3K pathway alterations in PIK3CA, PIK3R1, or PTEN) both showed benefit (combined HR 0.45).
+    Approximately 37% of CRC patients harbor these alterations.
+    See <a href="/methods" style="color: var(--mp-accent);">Methods</a> for details.
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+  "gene": "PTEN",
+  "chromosome": "10",
+  "strand": "+",
+  "exons": [
+    {"number": 1, "start": 89623195, "end": 89623860},
+    {"number": 2, "start": 89653782, "end": 89653866},
+    {"number": 3, "start": 89685269, "end": 89685314},
+    {"number": 4, "start": 89690802, "end": 89690846},
+    {"number": 5, "start": 89692770, "end": 89693008},
+    {"number": 6, "start": 89711873, "end": 89712016},
+    {"number": 7, "start": 89717610, "end": 89717776},
+    {"number": 8, "start": 89720651, "end": 89720875},
+    {"number": 9, "start": 89725044, "end": 89725229}
+  ],
+  "gene_start": 89623195,
+  "gene_end": 89725229,
+  "flanking_upstream_3mb": 86623195,
+  "flanking_downstream_3mb": 92725229,
+  "deletion_log_ratio_threshold": -0.2
+}

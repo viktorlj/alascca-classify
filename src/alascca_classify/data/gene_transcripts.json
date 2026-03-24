@@ -1,0 +1,5 @@
+{
+  "PIK3CA": {"ensembl_gene": "ENSG00000121879", "transcript": "ENST00000263967"},
+  "PIK3R1": {"ensembl_gene": "ENSG00000145675", "transcript": "ENST00000521381"},
+  "PTEN": {"ensembl_gene": "ENSG00000171862", "transcript": "ENST00000371953"}
+}

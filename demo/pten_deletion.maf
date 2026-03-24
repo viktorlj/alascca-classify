@@ -1,0 +1,3 @@
+#version 2.4
+Hugo_Symbol	Variant_Classification	HGVSp_Short	Chromosome	Start_Position	Reference_Allele	Tumor_Seq_Allele2	t_alt_count	t_ref_count
+KRAS	Missense_Mutation	p.A146T	12	25378647	G	A	25	125

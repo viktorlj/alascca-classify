@@ -1,0 +1,5 @@
+#version 2.4
+Hugo_Symbol	Variant_Classification	HGVSp_Short	Chromosome	Start_Position	Reference_Allele	Tumor_Seq_Allele2	t_alt_count	t_ref_count
+PIK3CA	Missense_Mutation	p.H1047R	3	178952085	A	G	48	102
+PTEN	Nonsense_Mutation	p.R130*	10	89692905	C	T	52	98
+KRAS	Missense_Mutation	p.G12V	12	25398285	C	A	30	120

@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Result &mdash; ALASCCA-classify{% endblock %}
+
+{% block content %}
+
+{# --- Hero: group badge --- #}
+<div class="mp-panel result-hero group-{{ r.alascca_group|lower }}">
+  <p class="mp-eyebrow">ALASCCA classification</p>
+  <div class="result-hero-row">
+    <div>
+      <h1 class="result-group-label">
+        {% if r.alascca_group == "A" %}
+          Group A
+        {% elif r.alascca_group == "B" %}
+          Group B
+        {% else %}
+          No PI3K alteration
+        {% endif %}
+      </h1>
+      <p class="result-group-desc">
+        {% if r.alascca_group == "A" %}
+          PIK3CA exon 9/20 hotspot mutation
+        {% elif r.alascca_group == "B" %}
+          Other PI3K pathway alteration
+        {% else %}
+          No qualifying PI3K pathway alterations detected
+        {% endif %}
+      </p>
+    </div>
+    <div class="aspirin-badge {{ 'eligible' if r.aspirin_eligible else 'not-eligible' }}">
+      {% if r.aspirin_eligible %}
+        Aspirin eligible
+      {% else %}
+        Not eligible
+      {% endif %}
+    </div>
+  </div>
+  <p class="result-sample-id mp-mono">{{ r.sample_id }}</p>
+</div>
+
+{# --- Variant tables --- #}
+{% if r.group_a_variants %}
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">Group A variants (PIK3CA hotspots)</h2>
+  <table class="variant-table">
+    <thead>
+      <tr>
+        <th>Gene</th>
+        <th>Protein change</th>
+        <th>Classification</th>
+        <th>Exon</th>
+        <th>Domain</th>
+        <th>VAF</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for v in r.group_a_variants %}
+      <tr>
+        <td class="mp-mono">{{ v.gene }}</td>
+        <td class="mp-mono">{{ v.hgvsp }}</td>
+        <td>{{ v.variant_classification }}</td>
+        <td>{{ v.exon or "&mdash;" }}</td>
+        <td>{{ v.domain or "&mdash;" }}</td>
+        <td>{{ "%.2f"|format(v.vaf) if v.vaf is not none else "&mdash;" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if r.group_b_variants %}
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">Group B variants</h2>
+  <table class="variant-table">
+    <thead>
+      <tr>
+        <th>Gene</th>
+        <th>Protein change</th>
+        <th>Classification</th>
+        <th>VAF</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for v in r.group_b_variants %}
+      <tr>
+        <td class="mp-mono">{{ v.gene }}</td>
+        <td class="mp-mono">{{ v.hgvsp }}</td>
+        <td>{{ v.variant_classification }}</td>
+        <td>{{ "%.2f"|format(v.vaf) if v.vaf is not none else "&mdash;" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{# --- PTEN deletion --- #}
+{% if r.pten_deletion and r.pten_deletion.detected %}
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">PTEN deep deletion</h2>
+  <div class="mp-alert mp-alert-info" style="font-size: var(--mp-fs-sm);">
+    {{ r.pten_deletion.note }}
+  </div>
+  <div class="pten-metrics" style="margin-top: 10px;">
+    <div class="mp-card">
+      <div class="mp-section-title">PTEN seg.mean</div>
+      <div class="mp-mono" style="font-size: 1.1rem;">{{ "%.3f"|format(r.pten_deletion.seg_mean_pten) }}</div>
+    </div>
+    <div class="mp-card">
+      <div class="mp-section-title">Upstream (3 Mb)</div>
+      <div class="mp-mono" style="font-size: 1.1rem;">{{ "%.3f"|format(r.pten_deletion.seg_mean_upstream) if r.pten_deletion.seg_mean_upstream is not none else "&mdash;" }}</div>
+    </div>
+    <div class="mp-card">
+      <div class="mp-section-title">Downstream (3 Mb)</div>
+      <div class="mp-mono" style="font-size: 1.1rem;">{{ "%.3f"|format(r.pten_deletion.seg_mean_downstream) if r.pten_deletion.seg_mean_downstream is not none else "&mdash;" }}</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# --- Informational biomarkers --- #}
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">Informational biomarkers</h2>
+  <div class="biomarker-grid">
+    <div class="mp-card">
+      <div class="mp-section-title">MSI status</div>
+      <div>{{ r.informational_biomarkers.msi_status or "Not provided" }}</div>
+    </div>
+    <div class="mp-card">
+      <div class="mp-section-title">BRAF V600E</div>
+      <div>
+        {% if r.informational_biomarkers.braf_v600e %}
+          <span class="biomarker-positive">Detected</span>
+        {% else %}
+          Not detected
+        {% endif %}
+      </div>
+    </div>
+    <div class="mp-card">
+      <div class="mp-section-title">KRAS</div>
+      <div>
+        {% if r.informational_biomarkers.kras_mutant %}
+          <span class="biomarker-positive">Mutant</span>
+          <span class="mp-mono mp-soft" style="font-size: var(--mp-fs-sm);">
+            {{ r.informational_biomarkers.kras_variants|join(", ") }}
+          </span>
+        {% else %}
+          Wild-type
+        {% endif %}
+      </div>
+    </div>
+    <div class="mp-card">
+      <div class="mp-section-title">NRAS</div>
+      <div>
+        {% if r.informational_biomarkers.nras_mutant %}
+          <span class="biomarker-positive">Mutant</span>
+          <span class="mp-mono mp-soft" style="font-size: var(--mp-fs-sm);">
+            {{ r.informational_biomarkers.nras_variants|join(", ") }}
+          </span>
+        {% else %}
+          Wild-type
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# --- Clinical notes --- #}
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">Clinical notes</h2>
+  <ul class="clinical-notes">
+    {% for note in r.clinical_notes %}
+    <li>{{ note }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{# --- Flags --- #}
+{% if r.flags %}
+<div class="mp-panel">
+  <h2 class="mp-section-title" style="margin-bottom: 10px;">Flags</h2>
+  {% for flag in r.flags %}
+  <div class="mp-warning-bar" style="margin-bottom: 6px;">{{ flag }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# --- Actions --- #}
+<div class="mp-panel action-bar">
+  <a href="/results/{{ result_id }}/pdf" class="mp-btn-primary" style="text-decoration: none; padding: 9px 18px;">
+    Download PDF
+  </a>
+  <a href="/results/{{ result_id }}/json" class="mp-btn-secondary" style="text-decoration: none; padding: 9px 18px;">
+    JSON
+  </a>
+  <a href="/" class="mp-btn-secondary" style="text-decoration: none; padding: 9px 18px;">
+    Classify another
+  </a>
+</div>
+
+{% endblock %}
