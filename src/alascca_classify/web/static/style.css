@@ -309,6 +309,52 @@
   color: var(--mp-ink-soft);
 }
 
+/* --- Install / CLI page --- */
+.cli-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 14px 18px;
+  border-radius: var(--mp-radius-sm);
+  overflow-x: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.cli-block code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+.cli-command {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--mp-border);
+}
+
+.cli-command:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.cli-command-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: var(--mp-fs-base);
+  font-weight: 600;
+  color: var(--mp-accent);
+  margin-bottom: 4px;
+}
+
+.cli-command-desc {
+  color: var(--mp-ink-soft);
+  font-size: var(--mp-fs-sm);
+  margin-bottom: 10px;
+}
+
 /* --- Responsive --- */
 @media (max-width: 700px) {
   .upload-row { grid-template-columns: 1fr; }

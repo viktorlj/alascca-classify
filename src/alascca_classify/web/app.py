@@ -194,6 +194,12 @@ async def methods(request: Request):
     return templates.TemplateResponse(request, "methods.html")
 
 
+@methods_router.get("/install", response_class=HTMLResponse)
+async def install(request: Request):
+    templates = request.app.state.templates
+    return templates.TemplateResponse(request, "install.html")
+
+
 # --- App factory ---
 
 def create_app() -> FastAPI:

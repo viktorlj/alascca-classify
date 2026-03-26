@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}Install &amp; CLI &mdash; ALASCCA-classify{% endblock %}
+
+{% block content %}
+<div class="mp-panel">
+  <p class="mp-eyebrow">Getting started</p>
+  <h1 style="font-size: var(--mp-fs-xl); margin-top: 4px;">Installation &amp; CLI</h1>
+  <p class="mp-subtitle" style="margin-top: 6px;">
+    Install alascca-classify locally and use it from the command line.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Requirements</h2>
+  <ul style="line-height: 1.8; color: var(--mp-ink-soft);">
+    <li>Python &ge; 3.11</li>
+    <li><a href="https://docs.astral.sh/uv/" style="color: var(--mp-accent);">uv</a> package manager (recommended) or pip</li>
+    <li>Git</li>
+  </ul>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Installation</h2>
+
+  <h3 style="font-size: var(--mp-fs-base); margin-top: 16px; margin-bottom: 8px;">Option 1 &mdash; From GitHub (recommended)</h3>
+  <pre class="cli-block"><code>git clone https://github.com/viktorlj/alascca-classify.git
+cd alascca-classify
+uv venv &amp;&amp; source .venv/bin/activate
+uv sync</code></pre>
+
+  <h3 style="font-size: var(--mp-fs-base); margin-top: 20px; margin-bottom: 8px;">Option 2 &mdash; Direct install with uv</h3>
+  <pre class="cli-block"><code>uv pip install git+https://github.com/viktorlj/alascca-classify.git</code></pre>
+
+  <p class="mp-soft" style="font-size: var(--mp-fs-sm); margin-top: 12px;">
+    After installation, the <code>alascca-classify</code> command is available in your shell.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">CLI commands</h2>
+
+  <div class="cli-command">
+    <h3 class="cli-command-name">classify</h3>
+    <p class="cli-command-desc">Classify a single sample from a MAF file.</p>
+    <pre class="cli-block"><code># JSON output (default)
+alascca-classify classify sample.maf
+
+# With SEG file for PTEN deep deletion detection
+alascca-classify classify sample.maf --seg sample.seg
+
+# Human-readable text output
+alascca-classify classify sample.maf --human
+
+# Generate PDF report
+alascca-classify classify sample.maf --pdf -o report.pdf
+
+# With sample metadata
+alascca-classify classify sample.maf --sample-id PATIENT_001 --metadata meta.json</code></pre>
+    <table class="variant-table" style="margin-top: 12px;">
+      <thead>
+        <tr><th>Option</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mp-mono">--seg</td><td>Path to SEG file for PTEN deletion detection</td></tr>
+        <tr><td class="mp-mono">--metadata</td><td>Path to JSON metadata file (sample_id, ptnm_stage, tumor_location, etc.)</td></tr>
+        <tr><td class="mp-mono">--sample-id</td><td>Sample identifier (overrides metadata file)</td></tr>
+        <tr><td class="mp-mono">-o, --output</td><td>Output file path (prints to stdout if omitted)</td></tr>
+        <tr><td class="mp-mono">--human</td><td>Human-readable text output</td></tr>
+        <tr><td class="mp-mono">--pdf</td><td>Generate PDF report</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cli-command">
+    <h3 class="cli-command-name">classify-batch</h3>
+    <p class="cli-command-desc">Classify a directory of MAF files in one go.</p>
+    <pre class="cli-block"><code># Basic batch classification
+alascca-classify classify-batch --input-dir ./samples/ --output results.tsv
+
+# With SEG files and metadata
+alascca-classify classify-batch --input-dir ./samples/ --seg-dir ./segments/ \
+  --metadata metadata.tsv --output results.tsv</code></pre>
+    <table class="variant-table" style="margin-top: 12px;">
+      <thead>
+        <tr><th>Option</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mp-mono">--input-dir</td><td>Directory containing .maf files (required)</td></tr>
+        <tr><td class="mp-mono">--seg-dir</td><td>Directory containing .seg files (matched by sample name)</td></tr>
+        <tr><td class="mp-mono">--metadata</td><td>TSV file with sample_id column and additional metadata</td></tr>
+        <tr><td class="mp-mono">-o, --output</td><td>Output TSV file (default: results.tsv)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cli-command">
+    <h3 class="cli-command-name">check-variant</h3>
+    <p class="cli-command-desc">Quickly check how a specific variant is classified.</p>
+    <pre class="cli-block"><code># Check a PIK3CA hotspot
+alascca-classify check-variant PIK3CA "p.E545K"
+
+# Check a PTEN nonsense variant
+alascca-classify check-variant PTEN "p.R130*" --type Nonsense_Mutation
+
+# Check a PIK3R1 missense
+alascca-classify check-variant PIK3R1 "p.N564D"</code></pre>
+    <table class="variant-table" style="margin-top: 12px;">
+      <thead>
+        <tr><th>Argument / Option</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mp-mono">GENE</td><td>Gene symbol: PIK3CA, PIK3R1, or PTEN</td></tr>
+        <tr><td class="mp-mono">HGVSP</td><td>Protein change, e.g. p.E545K</td></tr>
+        <tr><td class="mp-mono">--type</td><td>MAF Variant_Classification (default: Missense_Mutation)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cli-command">
+    <h3 class="cli-command-name">serve</h3>
+    <p class="cli-command-desc">Start the web interface locally.</p>
+    <pre class="cli-block"><code>alascca-classify serve --port 8000
+# Open http://localhost:8000</code></pre>
+    <table class="variant-table" style="margin-top: 12px;">
+      <thead>
+        <tr><th>Option</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mp-mono">-p, --port</td><td>Port to serve on (default: 8000)</td></tr>
+        <tr><td class="mp-mono">--host</td><td>Host to bind to (default: 127.0.0.1)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cli-command">
+    <h3 class="cli-command-name">version</h3>
+    <p class="cli-command-desc">Print the installed version.</p>
+    <pre class="cli-block"><code>alascca-classify version</code></pre>
+  </div>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Input formats</h2>
+
+  <h3 style="font-size: var(--mp-fs-base); margin-top: 12px; margin-bottom: 8px;">MAF file</h3>
+  <p style="color: var(--mp-ink-soft); margin-bottom: 8px;">Tab-separated, minimum required columns:</p>
+  <table class="variant-table">
+    <thead>
+      <tr><th>Column</th><th>Required</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="mp-mono">Hugo_Symbol</td><td>Yes</td><td>Gene symbol (PIK3CA, PIK3R1, PTEN, etc.)</td></tr>
+      <tr><td class="mp-mono">Variant_Classification</td><td>Yes</td><td>VEP consequence (Missense_Mutation, Frame_Shift_Del, etc.)</td></tr>
+      <tr><td class="mp-mono">HGVSp_Short</td><td>Yes</td><td>Protein change (e.g. p.E545K)</td></tr>
+      <tr><td class="mp-mono">t_alt_count</td><td>No</td><td>Tumor alt read count (for VAF calculation)</td></tr>
+      <tr><td class="mp-mono">t_ref_count</td><td>No</td><td>Tumor ref read count (for VAF calculation)</td></tr>
+    </tbody>
+  </table>
+
+  <h3 style="font-size: var(--mp-fs-base); margin-top: 20px; margin-bottom: 8px;">SEG file</h3>
+  <p style="color: var(--mp-ink-soft); margin-bottom: 8px;">Tab-separated, for PTEN deep deletion detection:</p>
+  <table class="variant-table">
+    <thead>
+      <tr><th>Column</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="mp-mono">ID</td><td>Sample identifier</td></tr>
+      <tr><td class="mp-mono">chrom</td><td>Chromosome</td></tr>
+      <tr><td class="mp-mono">loc.start</td><td>Segment start position</td></tr>
+      <tr><td class="mp-mono">loc.end</td><td>Segment end position</td></tr>
+      <tr><td class="mp-mono">num.mark</td><td>Number of probes in segment</td></tr>
+      <tr><td class="mp-mono">seg.mean</td><td>Log2 copy ratio</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Output</h2>
+  <p style="color: var(--mp-ink-soft); line-height: 1.7;">
+    The <code>classify</code> command produces JSON by default with fields including
+    <code>alascca_group</code> (A, B, or none),
+    <code>aspirin_eligible</code> (boolean),
+    classified variant details, informational biomarkers (BRAF, KRAS, NRAS, MSI),
+    and clinical notes.
+  </p>
+  <p style="color: var(--mp-ink-soft); line-height: 1.7; margin-top: 8px;">
+    The <code>classify-batch</code> command produces a TSV summary with one row per sample.
+  </p>
+</div>
+
+<div class="mp-panel">
+  <h2 class="methods-heading">Source code</h2>
+  <p style="color: var(--mp-ink-soft); line-height: 1.7;">
+    The source code, demo files, and full documentation are available on
+    <a href="https://github.com/viktorlj/alascca-classify" style="color: var(--mp-accent);">GitHub</a>.
+    Bug reports and contributions are welcome.
+  </p>
+</div>
+{% endblock %}
