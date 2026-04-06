@@ -1,11 +1,10 @@
-"""MAF and SEG file parsing with polars."""
+"""MAF and SEG file parsing with stdlib csv."""
 
 from __future__ import annotations
 
+import csv
 from io import StringIO
 from pathlib import Path
-
-import polars as pl
 
 from .models import CopyNumberSegment, Variant
 
@@ -51,69 +50,75 @@ _SEG_COLUMN_MAP = {
 }
 
 
-def _normalize_columns(df: pl.DataFrame, column_map: dict[str, str]) -> pl.DataFrame:
-    """Normalize column names using a mapping (case-insensitive)."""
-    rename_map = {}
-    for col in df.columns:
+def _normalize_columns(
+    fieldnames: list[str], column_map: dict[str, str]
+) -> dict[str, str]:
+    """Build a rename mapping from raw fieldnames using column_map (case-insensitive)."""
+    rename = {}
+    used_targets: set[str] = set()
+    for col in fieldnames:
         lower = col.lower().replace(" ", "_")
         if lower in column_map:
             target = column_map[lower]
-            if target not in rename_map.values():
-                rename_map[col] = target
+            if target not in used_targets:
+                rename[col] = target
+                used_targets.add(target)
         elif col in column_map.values():
-            pass  # Already normalized
-    if rename_map:
-        df = df.rename(rename_map)
-    return df
+            rename[col] = col  # already normalized
+            used_targets.add(col)
+    return rename
 
 
-def _skip_comment_lines(text: str) -> str:
-    """Remove lines starting with # (MAF comment headers)."""
-    lines = text.split("\n")
-    filtered = [line for line in lines if not line.startswith("#")]
-    return "\n".join(filtered)
-
-
-def _read_tsv(source: str | Path) -> pl.DataFrame:
-    """Read a TSV from a file path or string content."""
+def _read_tsv(source: str | Path) -> list[dict[str, str]]:
+    """Read a TSV from a file path or string content, returning list of row dicts."""
     is_file = isinstance(source, Path) or (
         isinstance(source, str) and "\t" not in source and "\n" not in source
     )
     if is_file:
-        path = Path(source)
-        text = path.read_text()
-        text = _skip_comment_lines(text)
-        return pl.read_csv(StringIO(text), separator="\t", infer_schema_length=10000)
+        text = Path(source).read_text()
     else:
-        text = _skip_comment_lines(source)
-        return pl.read_csv(StringIO(text), separator="\t", infer_schema_length=10000)
+        text = source
+
+    # Strip comment lines (MAF headers)
+    lines = [line for line in text.splitlines() if not line.startswith("#")]
+    reader = csv.DictReader(StringIO("\n".join(lines)), delimiter="\t")
+    return list(reader)
+
+
+def _remap_row(row: dict[str, str], rename: dict[str, str]) -> dict[str, str]:
+    """Apply column rename mapping to a single row dict."""
+    return {rename.get(k, k): v for k, v in row.items()}
 
 
 def parse_maf(source: str | Path) -> list[Variant]:
     """Parse a MAF file (path or string content) into a list of Variants."""
-    df = _read_tsv(source)
-    df = _normalize_columns(df, _MAF_COLUMN_MAP)
+    rows = _read_tsv(source)
+    if not rows:
+        return []
 
-    # Determine protein change column
-    hgvsp_col = None
-    if "HGVSp_Short" in df.columns:
-        hgvsp_col = "HGVSp_Short"
-    elif "HGVSp" in df.columns:
-        hgvsp_col = "HGVSp"
+    rename = _normalize_columns(list(rows[0].keys()), _MAF_COLUMN_MAP)
+
+    # Determine protein change column after normalization
+    sample_renamed = {rename.get(k, k) for k in rows[0].keys()}
+    hgvsp_col = "HGVSp_Short" if "HGVSp_Short" in sample_renamed else (
+        "HGVSp" if "HGVSp" in sample_renamed else None
+    )
 
     variants: list[Variant] = []
-    for row in df.iter_rows(named=True):
-        gene = str(row.get("Hugo_Symbol", "")).strip()
+    for raw_row in rows:
+        row = _remap_row(raw_row, rename)
+
+        gene = (row.get("Hugo_Symbol") or "").strip()
         if not gene:
             continue
 
         hgvsp = ""
         if hgvsp_col:
-            raw = row.get(hgvsp_col, "")
-            hgvsp = str(raw).strip() if raw is not None else ""
+            raw = row.get(hgvsp_col) or ""
+            hgvsp = raw.strip()
 
-        var_class = str(row.get("Variant_Classification", "")).strip()
-        chrom = str(row.get("Chromosome", "")).strip()
+        var_class = (row.get("Variant_Classification") or "").strip()
+        chrom = (row.get("Chromosome") or "").strip()
 
         start_pos = row.get("Start_Position")
         if start_pos is not None:
@@ -122,17 +127,17 @@ def parse_maf(source: str | Path) -> list[Variant]:
             except (ValueError, TypeError):
                 start_pos = None
 
-        ref_allele = str(row.get("Reference_Allele", "")).strip()
-        tumor_allele = str(row.get("Tumor_Seq_Allele2", "")).strip()
+        ref_allele = (row.get("Reference_Allele") or "").strip()
+        tumor_allele = (row.get("Tumor_Seq_Allele2") or "").strip()
 
         t_alt = row.get("t_alt_count")
         t_ref = row.get("t_ref_count")
         try:
-            t_alt = int(t_alt) if t_alt is not None else None
+            t_alt = int(t_alt) if t_alt else None
         except (ValueError, TypeError):
             t_alt = None
         try:
-            t_ref = int(t_ref) if t_ref is not None else None
+            t_ref = int(t_ref) if t_ref else None
         except (ValueError, TypeError):
             t_ref = None
 
@@ -154,31 +159,36 @@ def parse_maf(source: str | Path) -> list[Variant]:
 
 def parse_seg(source: str | Path) -> list[CopyNumberSegment]:
     """Parse a SEG file (path or string content) into a list of CopyNumberSegments."""
-    df = _read_tsv(source)
-    df = _normalize_columns(df, _SEG_COLUMN_MAP)
+    rows = _read_tsv(source)
+    if not rows:
+        return []
+
+    rename = _normalize_columns(list(rows[0].keys()), _SEG_COLUMN_MAP)
 
     segments: list[CopyNumberSegment] = []
-    for row in df.iter_rows(named=True):
-        chrom_raw = row.get("chrom", "")
-        chrom = str(chrom_raw).replace("chr", "").strip()
+    for raw_row in rows:
+        row = _remap_row(raw_row, rename)
+
+        chrom_raw = row.get("chrom") or ""
+        chrom = chrom_raw.replace("chr", "").strip()
 
         try:
-            start = int(row.get("loc.start", 0))
-            end = int(row.get("loc.end", 0))
+            start = int(row.get("loc.start") or 0)
+            end = int(row.get("loc.end") or 0)
         except (ValueError, TypeError):
             continue
 
         try:
-            seg_mean = float(row.get("seg.mean", 0.0))
+            seg_mean = float(row.get("seg.mean") or 0.0)
         except (ValueError, TypeError):
             seg_mean = 0.0
 
         try:
-            num_marks = int(row.get("num.mark", 0))
+            num_marks = int(row.get("num.mark") or 0)
         except (ValueError, TypeError):
             num_marks = 0
 
-        sample_id = str(row.get("ID", "")).strip()
+        sample_id = (row.get("ID") or "").strip()
 
         segments.append(
             CopyNumberSegment(

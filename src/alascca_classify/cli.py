@@ -110,13 +110,13 @@ def classify_batch(
     # Load metadata if provided
     meta_map: dict[str, dict] = {}
     if metadata and metadata.exists():
-        import polars as pl
+        import csv
 
-        meta_df = pl.read_csv(metadata, separator="\t")
-        for row in meta_df.iter_rows(named=True):
-            sid = str(row.get("sample_id", ""))
-            if sid:
-                meta_map[sid] = row
+        with open(metadata) as f:
+            for row in csv.DictReader(f, delimiter="\t"):
+                sid = (row.get("sample_id") or "").strip()
+                if sid:
+                    meta_map[sid] = dict(row)
 
     results = []
     for maf_path in maf_files:
