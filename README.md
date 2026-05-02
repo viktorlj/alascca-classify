@@ -129,7 +129,7 @@ src/alascca_classify/
 
 ## Caveats
 
-1. **Research and clinical decision support only.** Final treatment decisions must be made by the treating physician.
+1. **For research use and clinical decision support only.** Not a standalone diagnostic device. Outputs may be incomplete or incorrect and must be reviewed by qualified experts in the full clinical, laboratory, and histopathological context. The authors assume no responsibility for clinical decisions or other consequences of use.
 2. PTEN deep deletion requires tumor purity ≥ 30%.
 3. All missense variants are included per ALASCCA protocol (VEP moderate impact threshold), without pathogenicity assessment.
 4. Germline filtering is assumed — input should be somatic variants only.

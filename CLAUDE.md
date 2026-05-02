@@ -311,7 +311,7 @@ MAF `Variant_Classification` values → ALASCCA consequence types:
 
 ## Important caveats to document in the tool
 
-1. **Research and clinical decision support only.** Final treatment decisions must be made by the treating physician with full clinical context.
+1. **For research use and clinical decision support only.** Not a standalone diagnostic device. Outputs may be incomplete or incorrect and must be reviewed by qualified experts in the full clinical, laboratory, and histopathological context. The authors assume no responsibility for clinical decisions or other consequences of use.
 2. **PTEN deep deletion detection from SEG files** requires adequate tumor purity (≥30%) and uses a simplified algorithm compared to the ALASCCA trial's full CNVkit pipeline.
 3. **The tool classifies variants but does not assess pathogenicity.** All missense variants in PIK3R1 and PTEN are included per the ALASCCA protocol, which used VEP "moderate impact" as the threshold.
 4. **Germline filtering is assumed.** The input MAF should contain somatic variants only (tumor-normal paired calling). The ALASCCA trial used paired tumor-blood sequencing.

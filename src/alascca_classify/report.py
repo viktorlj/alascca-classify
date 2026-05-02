@@ -231,8 +231,11 @@ def result_to_pdf(result: ClassificationResult) -> bytes:
     pdf.ln(6)
     pdf.set_font("Helvetica", "I", 8)
     pdf.multi_cell(0, 4, _sanitize_text(
-        "Disclaimer: This report is for research and clinical decision support only. "
-        "Final treatment decisions must be made by the treating physician. "
+        "Disclaimer: For research use and clinical decision support only. "
+        "Not a standalone diagnostic device. Outputs may be incomplete or incorrect "
+        "and must be reviewed by qualified experts in the full clinical, laboratory, "
+        "and histopathological context. The authors assume no responsibility for "
+        "clinical decisions or other consequences of use. "
         "Based on Martling et al., NEJM 2025;393:1051-64. "
         f"alascca-classify v{result.version}"
     ))
